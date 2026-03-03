@@ -1,3 +1,7 @@
+// ========================================
+// 🎲 D&D GACHA SYSTEM
+// ========================================
+
 class LootGachaSystem {
   constructor() {
     console.log('🎯 Конструктор запущен');
@@ -193,4 +197,106 @@ class LootGachaSystem {
 
   getItem() {
     const items = {
-      common: ['Зелье лечения', '
+      common: ['Зелье лечения', 'Факел', 'Веревка', 'Рюкзак', 'Паек'],
+      uncommon: ['Зелье невидимости', '+1 Меч', 'Кольцо защиты', 'Сапоги скорости'],
+      rare: ['+2 Доспех', 'Жезл чудес', 'Амулет здоровья', 'Пояс силы'],
+      epic: ['+3 Оружие', 'Плащ смещения', 'Браслеты защиты', 'Кольцо регенерации'],
+      legendary: ['Святой мститель', 'Посох магов', 'Книга заклинаний', 'Артефакт']
+    };
+    
+    const pool = items[this.currentRarity];
+    const name = pool[Math.floor(Math.random() * pool.length)];
+    return { name, rarity: this.currentRarity };
+  }
+
+  getReward() {
+    const rarities = ['common', 'uncommon', 'rare', 'epic', 'legendary'];
+    const idx = rarities.indexOf(this.currentRarity);
+    const rand = Math.random();
+    
+    if (rand < 0.7) return this.currentRarity;
+    if (rand < 0.9 && idx < 4) return rarities[idx + 1];
+    if (idx > 0) return rarities[idx - 1];
+    
+    return this.currentRarity;
+  }
+
+  upgradeTickets(from) {
+    console.log(`⬆️ Улучшение: ${from}`);
+    
+    const rarities = ['common', 'uncommon', 'rare', 'epic', 'legendary'];
+    const idx = rarities.indexOf(from);
+    
+    if (idx === -1 || idx === 4) {
+      this.notify('Нельзя улучшить');
+      return;
+    }
+    
+    if (this.data.tickets[from] < 3) {
+      this.notify('Нужно 3 талончика!');
+      return;
+    }
+    
+    const to = rarities[idx + 1];
+    this.data.tickets[from] -= 3;
+    this.data.tickets[to]++;
+    this.save();
+    this.updateUI();
+    
+    this.notify(`✨ 3x ${this.getRarityRU(from)} → 1x ${this.getRarityRU(to)}`);
+  }
+
+  checkBonus() {
+    const today = new Date().toDateString();
+    if (this.data.lastBonus !== today) {
+      this.data.tickets.common += 5;
+      this.data.lastBonus = today;
+      this.save();
+      this.notify('🎁 Бонус: +5 обычных!');
+    }
+  }
+
+  resetData() {
+    if (confirm('Удалить все данные?')) {
+      localStorage.removeItem('dndGacha');
+      location.reload();
+    }
+  }
+
+  getRarityRU(r) {
+    const names = {
+      common: 'Обычный',
+      uncommon: 'Необычный',
+      rare: 'Редкий',
+      epic: 'Эпический',
+      legendary: 'Легендарный'
+    };
+    return names[r] || r;
+  }
+
+  notify(msg) {
+    console.log('📢 Уведомление:', msg);
+    const n = document.createElement('div');
+    n.className = 'notification';
+    n.textContent = msg;
+    document.body.appendChild(n);
+    setTimeout(() => n.remove(), 2500);
+  }
+
+  sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+}
+
+// ========================================
+// 🚀 ЗАПУСК СИСТЕМЫ
+// ========================================
+
+let gachaSystem;
+
+document.addEventListener('DOMContentLoaded', () => {
+  console.log('✅ DOM загружен!');
+  gachaSystem = new LootGachaSystem();
+  gachaSystem.init();
+  console.log('🎉 Система запущена!');
+});
