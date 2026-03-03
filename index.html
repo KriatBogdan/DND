@@ -3,89 +3,79 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>🎲 D&D Loot Gacha</title>
+  <title>🎲 D&D Gacha</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="container">
-    <!-- Заголовок -->
     <header class="header">
-      <h1>🎲 D&D Loot Gacha System</h1>
-      <p class="subtitle">Выбери талончик, крути, получай легендарные предметы!</p>
+      <h1>🎲 D&D Loot Gacha</h1>
+      <p class="subtitle">Кликни на талончик → Нажми "Крутить"</p>
     </header>
 
-    <!-- Панель талончиков -->
+    <!-- ТАЛОНЧИКИ -->
     <section class="tickets-panel">
-      <h2>💳 Мои талончики (кликни для выбора)</h2>
+      <h2>💳 Мои талончики</h2>
       <div class="tickets-grid">
-        <div class="ticket-card common">
+        <div class="ticket-card common" data-rarity="common">
           <span class="rarity-name">Обычный</span>
           <span class="ticket-count" id="ticket-common">0</span>
-          <button id="upgrade-common" class="upgrade-btn">↑ 3→1</button>
+          <button id="upgrade-common" class="upgrade-btn" onclick="event.stopPropagation(); gachaSystem.upgradeTickets('common')">↑ 3→1</button>
         </div>
-        <div class="ticket-card uncommon">
+        <div class="ticket-card uncommon" data-rarity="uncommon">
           <span class="rarity-name">Необычный</span>
           <span class="ticket-count" id="ticket-uncommon">0</span>
-          <button id="upgrade-uncommon" class="upgrade-btn">↑ 3→1</button>
+          <button id="upgrade-uncommon" class="upgrade-btn" onclick="event.stopPropagation(); gachaSystem.upgradeTickets('uncommon')">↑ 3→1</button>
         </div>
-        <div class="ticket-card rare">
+        <div class="ticket-card rare" data-rarity="rare">
           <span class="rarity-name">Редкий</span>
           <span class="ticket-count" id="ticket-rare">0</span>
-          <button id="upgrade-rare" class="upgrade-btn">↑ 3→1</button>
+          <button id="upgrade-rare" class="upgrade-btn" onclick="event.stopPropagation(); gachaSystem.upgradeTickets('rare')">↑ 3→1</button>
         </div>
-        <div class="ticket-card epic">
+        <div class="ticket-card epic" data-rarity="epic">
           <span class="rarity-name">Эпический</span>
           <span class="ticket-count" id="ticket-epic">0</span>
-          <button id="upgrade-epic" class="upgrade-btn">↑ 3→1</button>
+          <button id="upgrade-epic" class="upgrade-btn" onclick="event.stopPropagation(); gachaSystem.upgradeTickets('epic')">↑ 3→1</button>
         </div>
-        <div class="ticket-card legendary">
+        <div class="ticket-card legendary" data-rarity="legendary">
           <span class="rarity-name">Легендарный</span>
           <span class="ticket-count" id="ticket-legendary">0</span>
-          <button class="upgrade-btn" disabled>Максимум</button>
+          <button class="upgrade-btn" disabled>MAX</button>
         </div>
       </div>
     </section>
 
-    <!-- Секция крутки -->
+    <!-- КРУТКА -->
     <section class="gacha-section">
-      <h2>🎰 Совершить крутку</h2>
-      <div class="spin-area">
-        <button id="spin-btn" class="spin-button">
-          🎲 Крутить (Обычный)
-        </button>
-        <div id="gacha-result" class="gacha-result"></div>
-      </div>
+      <h2>🎰 Крутка</h2>
+      <button id="spin-btn" class="spin-button">🎲 Крутить</button>
+      <div id="gacha-result" class="gacha-result"></div>
     </section>
 
-    <!-- Статистика -->
+    <!-- СТАТИСТИКА -->
     <section class="stats-section">
       <h2>📊 Статистика</h2>
       <div class="stats-grid">
         <div class="stat-card">
-          <span class="stat-label">Всего круток</span>
+          <span class="stat-label">Круток</span>
           <span class="stat-value" id="total-spins">0</span>
-        </div>
-        <div class="stat-card">
-          <span class="stat-label">Предметов получено</span>
-          <span class="stat-value" id="total-items">0</span>
         </div>
       </div>
     </section>
 
-    <!-- Инструкция -->
+    <!-- ИНСТРУКЦИЯ -->
     <section class="info-section">
-      <h3>ℹ️ Как играть:</h3>
+      <h3>ℹ️ Инструкция:</h3>
       <ol>
-        <li>🎯 <strong>Выберите талончик</strong> - кликните на карточку талончика</li>
-        <li>🎲 <strong>Нажмите "Крутить"</strong> - потратите 1 талончик</li>
-        <li>🎁 <strong>Получите предмет</strong> + 1 талончик обратно (возможно лучше!)</li>
-        <li>⬆️ <strong>Улучшайте</strong> - 3 талончика → 1 более редкий</li>
+        <li>Кликни на карточку талончика</li>
+        <li>Нажми "Крутить"</li>
+        <li>Получи предмет + талончик обратно!</li>
+        <li>Улучшай: 3→1</li>
       </ol>
     </section>
 
-    <!-- Кнопки управления -->
     <footer class="footer">
-      <button id="reset-data" class="reset-btn">🔄 Сбросить данные</button>
+      <button onclick="gachaSystem.resetData()" class="reset-btn">🔄 Сброс</button>
     </footer>
   </div>
 
