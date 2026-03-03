@@ -11,12 +11,12 @@
     <!-- Заголовок -->
     <header class="header">
       <h1>🎲 D&D Loot Gacha System</h1>
-      <p class="subtitle">Собирай талончики, крути удачу, получай легендарные предметы!</p>
+      <p class="subtitle">Выбери талончик, крути, получай легендарные предметы!</p>
     </header>
 
     <!-- Панель талончиков -->
     <section class="tickets-panel">
-      <h2>💳 Мои талончики</h2>
+      <h2>💳 Мои талончики (кликни для выбора)</h2>
       <div class="tickets-grid">
         <div class="ticket-card common">
           <span class="rarity-name">Обычный</span>
@@ -46,11 +46,14 @@
       </div>
     </section>
 
-    <!-- Секция круток (ваша существующая система) -->
+    <!-- Секция крутки -->
     <section class="gacha-section">
       <h2>🎰 Совершить крутку</h2>
-      <div id="gacha-container" class="gacha-container">
-        <!-- Сюда загружается ваша система круток -->
+      <div class="spin-area">
+        <button id="spin-btn" class="spin-button">
+          🎲 Крутить (Обычный)
+        </button>
+        <div id="gacha-result" class="gacha-result"></div>
       </div>
     </section>
 
@@ -63,10 +66,21 @@
           <span class="stat-value" id="total-spins">0</span>
         </div>
         <div class="stat-card">
-          <span class="stat-label">Уровень</span>
-          <span class="stat-value" id="player-level">1</span>
+          <span class="stat-label">Предметов получено</span>
+          <span class="stat-value" id="total-items">0</span>
         </div>
       </div>
+    </section>
+
+    <!-- Инструкция -->
+    <section class="info-section">
+      <h3>ℹ️ Как играть:</h3>
+      <ol>
+        <li>🎯 <strong>Выберите талончик</strong> - кликните на карточку талончика</li>
+        <li>🎲 <strong>Нажмите "Крутить"</strong> - потратите 1 талончик</li>
+        <li>🎁 <strong>Получите предмет</strong> + 1 талончик обратно (возможно лучше!)</li>
+        <li>⬆️ <strong>Улучшайте</strong> - 3 талончика → 1 более редкий</li>
+      </ol>
     </section>
 
     <!-- Кнопки управления -->
@@ -75,7 +89,6 @@
     </footer>
   </div>
 
-  <script src="items-db.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
