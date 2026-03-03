@@ -1,103 +1,183 @@
-// Система управления талончиками и прогрессом
 class LootGachaSystem {
   constructor() {
     this.loadPlayerData();
-    this.initializeUI();
-    this.currentRarity = 'common'; // Текущий выбранный тип талончика
+    this.currentRarity = 'common';
+    this.init();
   }
 
-  // Загрузка данных игрока
   loadPlayerData() {
-    const savedData = localStorage.getItem('playerData');
-    if (savedData) {
-      this.playerData = JSON.parse(savedData);
+    const saved = localStorage.getItem('dndGacha');
+    if (saved) {
+      this.data = JSON.parse(saved);
     } else {
-      this.playerData = {
-        tickets: {
-          common: 10,
-          uncommon: 2,
-          rare: 0,
-          epic: 0,
-          legendary: 0
-        },
+      this.data = {
+        tickets: { common: 10, uncommon: 2, rare: 0, epic: 0, legendary: 0 },
         totalSpins: 0,
-        lastDailyBonus: null,
-        inventory: []
+        lastBonus: null
       };
-      this.savePlayerData();
+      this.save();
     }
   }
 
-  savePlayerData() {
-    localStorage.setItem('playerData', JSON.stringify(this.playerData));
+  save() {
+    localStorage.setItem('dndGacha', JSON.stringify(this.data));
   }
 
-  initializeUI() {
-    this.updateTicketDisplay();
-    this.updateStatsDisplay();
-    this.setupEventListeners();
-    this.checkDailyBonus();
+  init() {
+    console.log('Система загружена!');
+    this.updateUI();
+    this.checkBonus();
+    this.setupEvents();
     this.selectRarity('common');
   }
 
-  // Обновление отображения талончиков
-  updateTicketDisplay() {
-    const rarities = ['common', 'uncommon', 'rare', 'epic', 'legendary'];
-    rarities.forEach(rarity => {
-      const element = document.getElementById(`ticket-${rarity}`);
-      if (element) {
-        element.textContent = this.playerData.tickets[rarity];
-      }
+  setupEvents() {
+    // Выбор талончика
+    document.querySelectorAll('.ticket-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const rarity = card.getAttribute('data-rarity');
+        this.selectRarity(rarity);
+      });
+    });
+
+    // Кнопка крутки
+    document.getElementById('spin-btn').addEventListener('click', () => {
+      this.spin();
     });
   }
 
-  // Обновление статистики
-  updateStatsDisplay() {
-    const totalSpinsEl = document.getElementById('total-spins');
-    if (totalSpinsEl) {
-      totalSpinsEl.textContent = this.playerData.totalSpins;
-    }
-  }
-
-  // Выбор редкости талончика для крутки
   selectRarity(rarity) {
     this.currentRarity = rarity;
     
-    // Обновляем UI - убираем active со всех
-    document.querySelectorAll('.ticket-card').forEach(card => {
-      card.classList.remove('active');
+    // Убираем active
+    document.querySelectorAll('.ticket-card').forEach(c => c.classList.remove('active'));
+    
+    // Добавляем active
+    document.querySelector(`.ticket-card.${rarity}`).classList.add('active');
+    
+    this.updateSpinBtn();
+  }
+
+  updateUI() {
+    // Обновляем счетчики
+    Object.keys(this.data.tickets).forEach(rarity => {
+      const el = document.getElementById(`ticket-${rarity}`);
+      if (el) el.textContent = this.data.tickets[rarity];
     });
-    
-    // Добавляем active к выбранному
-    const selectedCard = document.querySelector(`.ticket-card.${rarity}`);
-    if (selectedCard) {
-      selectedCard.classList.add('active');
-    }
 
-    // Обновляем кнопку крутки
-    this.updateSpinButton();
+    // Статистика
+    const spins = document.getElementById('total-spins');
+    if (spins) spins.textContent = this.data.totalSpins;
+
+    this.updateSpinBtn();
   }
 
-  // Обновление кнопки крутки
-  updateSpinButton() {
-    const spinBtn = document.getElementById('spin-btn');
-    if (!spinBtn) return;
-
-    const hasTicket = this.playerData.tickets[this.currentRarity] > 0;
+  updateSpinBtn() {
+    const btn = document.getElementById('spin-btn');
+    const hasTicket = this.data.tickets[this.currentRarity] > 0;
     
-    spinBtn.disabled = !hasTicket;
-    spinBtn.textContent = hasTicket 
-      ? `🎲 Крутить (${this.getRarityName(this.currentRarity)})`
-      : `❌ Нет талончиков`;
+    btn.disabled = !hasTicket;
+    btn.textContent = hasTicket 
+      ? `🎲 Крутить (${this.getRarityRU(this.currentRarity)})`
+      : '❌ Нет талончиков';
   }
 
-  // ГЛАВНАЯ ФУНКЦИЯ КРУТКИ
-  async performSpin() {
-    // Проверяем наличие талончика
-    if (this.playerData.tickets[this.currentRarity] <= 0) {
-      this.showNotification('❌ У вас нет талончиков этого типа!');
+  async spin() {
+    if (this.data.tickets[this.currentRarity] <= 0) {
+      this.notify('❌ Нет талончиков!');
       return;
     }
 
-    // Потребляем талончик
-    this
+    // Списываем талончик
+    this.data.tickets[this.currentRarity]--;
+    this.data.totalSpins++;
+    this.save();
+    this.updateUI();
+
+    // Анимация
+    const result = document.getElementById('gacha-result');
+    result.style.display = 'block';
+    result.innerHTML = '<div class="spinner">🎰</div>';
+
+    await this.sleep(1500);
+
+    // Получаем предмет
+    const item = this.getItem();
+    
+    // Получаем награду (талончик)
+    const reward = this.getReward();
+    this.data.tickets[reward]++;
+    this.save();
+    this.updateUI();
+
+    // Показываем результат
+    result.innerHTML = `
+      <div class="result-card ${item.rarity}">
+        <h3>🎉 Получено!</h3>
+        <div class="item-name">${item.name}</div>
+        <div class="item-rarity">${this.getRarityRU(item.rarity)}</div>
+        <div class="reward-info">
+          ✨ Награда: +1 ${this.getRarityRU(reward)}
+        </div>
+      </div>
+    `;
+  }
+
+  getItem() {
+    const items = {
+      common: ['Зелье лечения', 'Факел', 'Веревка', 'Рюкзак', 'Паек'],
+      uncommon: ['Зелье невидимости', '+1 Меч', 'Кольцо защиты', 'Сапоги скорости'],
+      rare: ['+2 Доспех', 'Жезл чудес', 'Амулет здоровья', 'Пояс силы'],
+      epic: ['+3 Оружие', 'Плащ смещения', 'Браслеты защиты', 'Кольцо регенерации'],
+      legendary: ['Святой мститель', 'Посох магов', 'Книга заклинаний', 'Артефакт']
+    };
+
+    const pool = items[this.currentRarity];
+    const name = pool[Math.floor(Math.random() * pool.length)];
+
+    return { name, rarity: this.currentRarity };
+  }
+
+  getReward() {
+    const rarities = ['common', 'uncommon', 'rare', 'epic', 'legendary'];
+    const idx = rarities.indexOf(this.currentRarity);
+    const rand = Math.random();
+
+    if (rand < 0.7) return this.currentRarity; // 70%
+    if (rand < 0.9 && idx < 4) return rarities[idx + 1]; // 20% выше
+    if (idx > 0) return rarities[idx - 1]; // 10% ниже
+    
+    return this.currentRarity;
+  }
+
+  upgradeTickets(from) {
+    const rarities = ['common', 'uncommon', 'rare', 'epic', 'legendary'];
+    const idx = rarities.indexOf(from);
+    
+    if (idx === -1 || idx === 4) {
+      this.notify('Нельзя улучшить');
+      return;
+    }
+
+    if (this.data.tickets[from] < 3) {
+      this.notify('Нужно 3 талончика!');
+      return;
+    }
+
+    const to = rarities[idx + 1];
+    this.data.tickets[from] -= 3;
+    this.data.tickets[to]++;
+    this.save();
+    this.updateUI();
+    this.notify(`✨ 3x ${this.getRarityRU(from)} → 1x ${this.getRarityRU(to)}`);
+  }
+
+  checkBonus() {
+    const today = new Date().toDateString();
+    if (this.data.lastBonus !== today) {
+      this.data.tickets.common += 5;
+      this.data.lastBonus = today;
+      this.save();
+      this.notify('🎁 Бонус: +5 обычных!');
+    }
+  }*
