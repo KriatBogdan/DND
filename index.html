@@ -1,42 +1,81 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🎲 D&D Loot Gacha</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🎲 D&D Loot Gacha</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>🎲 D&D Loot Gacha</h1>
-            <p>Используйте билеты для получения случайных предметов!</p>
-        </header>
+  <div class="container">
+    <!-- Заголовок -->
+    <header class="header">
+      <h1>🎲 D&D Loot Gacha System</h1>
+      <p class="subtitle">Собирай талончики, крути удачу, получай легендарные предметы!</p>
+    </header>
 
-        <div class="tickets-section">
-            <h2>Выберите билет</h2>
-            <div class="tickets-grid" id="ticketsGrid"></div>
+    <!-- Панель талончиков -->
+    <section class="tickets-panel">
+      <h2>💳 Мои талончики</h2>
+      <div class="tickets-grid">
+        <div class="ticket-card common">
+          <span class="rarity-name">Обычный</span>
+          <span class="ticket-count" id="ticket-common">0</span>
+          <button id="upgrade-common" class="upgrade-btn">↑ 3→1</button>
         </div>
-
-        <div class="result-section" id="resultSection" style="display: none;">
-            <h2>🎉 Вы получили:</h2>
-            <div class="result-card" id="resultCard"></div>
-            <button class="btn-roll-again" onclick="rollAgain()">Открыть еще билет</button>
+        <div class="ticket-card uncommon">
+          <span class="rarity-name">Необычный</span>
+          <span class="ticket-count" id="ticket-uncommon">0</span>
+          <button id="upgrade-uncommon" class="upgrade-btn">↑ 3→1</button>
         </div>
-
-        <div class="animation-overlay" id="animationOverlay">
-            <div class="gacha-animation">
-                <div class="spinner"></div>
-                <p>Открываем билет...</p>
-            </div>
+        <div class="ticket-card rare">
+          <span class="rarity-name">Редкий</span>
+          <span class="ticket-count" id="ticket-rare">0</span>
+          <button id="upgrade-rare" class="upgrade-btn">↑ 3→1</button>
         </div>
+        <div class="ticket-card epic">
+          <span class="rarity-name">Эпический</span>
+          <span class="ticket-count" id="ticket-epic">0</span>
+          <button id="upgrade-epic" class="upgrade-btn">↑ 3→1</button>
+        </div>
+        <div class="ticket-card legendary">
+          <span class="rarity-name">Легендарный</span>
+          <span class="ticket-count" id="ticket-legendary">0</span>
+          <button class="upgrade-btn" disabled>Максимум</button>
+        </div>
+      </div>
+    </section>
 
-        <footer>
-            <p>Made with ❤️ for D&D players</p>
-        </footer>
-    </div>
+    <!-- Секция круток (ваша существующая система) -->
+    <section class="gacha-section">
+      <h2>🎰 Совершить крутку</h2>
+      <div id="gacha-container" class="gacha-container">
+        <!-- Сюда загружается ваша система круток -->
+      </div>
+    </section>
 
-    <script src="items-db.js"></script>
-    <script src="script.js"></script>
+    <!-- Статистика -->
+    <section class="stats-section">
+      <h2>📊 Статистика</h2>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <span class="stat-label">Всего круток</span>
+          <span class="stat-value" id="total-spins">0</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Уровень</span>
+          <span class="stat-value" id="player-level">1</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Кнопки управления -->
+    <footer class="footer">
+      <button id="reset-data" class="reset-btn">🔄 Сбросить данные</button>
+    </footer>
+  </div>
+
+  <script src="items-db.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
