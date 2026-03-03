@@ -1,7 +1,3 @@
-// ========================================
-// 🎲 D&D GACHA SYSTEM - ИСПРАВЛЕННАЯ ВЕРСИЯ
-// ========================================
-
 class LootGachaSystem {
   constructor() {
     console.log('🎯 Конструктор запущен');
@@ -38,34 +34,39 @@ class LootGachaSystem {
 
   init() {
     console.log('🚀 Инициализация системы...');
-    
-    // Проверка элементов
-    const spinBtn = document.getElementById('spin-btn');
-    const ticketCards = document.querySelectorAll('.ticket-card');
-    
-    console.log('🎯 Найдено карточек:', ticketCards.length);
-    console.log('🎯 Кнопка крутки:', spinBtn ? 'OK' : 'НЕ НАЙДЕНА!');
-    
     this.updateUI();
     this.checkBonus();
     this.setupEvents();
     this.selectRarity('common');
-    
     console.log('✅ Система готова!');
   }
 
   setupEvents() {
     console.log('🔗 Настройка событий...');
     
-    // Выбор талончика
+    // Выбор талончика (КЛИК ПО КАРТОЧКЕ)
     const cards = document.querySelectorAll('.ticket-card');
-    cards.forEach((card, index) => {
+    cards.forEach((card) => {
       const rarity = card.getAttribute('data-rarity');
-      console.log(`  Карточка ${index}: ${rarity}`);
       
       card.addEventListener('click', (e) => {
+        // Если кликнули на кнопку улучшения - не выбираем карточку
+        if (e.target.classList.contains('upgrade-btn')) {
+          return;
+        }
         console.log(`🎯 Клик по карточке: ${rarity}`);
         this.selectRarity(rarity);
+      });
+    });
+    
+    // Кнопки улучшения
+    const upgradeButtons = document.querySelectorAll('.upgrade-btn[data-upgrade]');
+    upgradeButtons.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation(); // Не активируем карточку
+        const rarity = btn.getAttribute('data-upgrade');
+        console.log(`⬆️ Клик на улучшение: ${rarity}`);
+        this.upgradeTickets(rarity);
       });
     });
     
@@ -77,8 +78,15 @@ class LootGachaSystem {
         this.spin();
       });
       console.log('✅ Кнопка крутки подключена');
-    } else {
-      console.error('❌ Кнопка крутки не найдена!');
+    }
+    
+    // Кнопка сброса
+    const resetBtn = document.getElementById('reset-btn');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        this.resetData();
+      });
+      console.log('✅ Кнопка сброса подключена');
     }
   }
 
@@ -96,8 +104,6 @@ class LootGachaSystem {
     if (selected) {
       selected.classList.add('active');
       console.log('✅ Карточка активирована');
-    } else {
-      console.error('❌ Карточка не найдена!');
     }
     
     this.updateSpinBtn();
@@ -134,21 +140,16 @@ class LootGachaSystem {
     btn.textContent = hasTicket 
       ? `🎲 Крутить (${rarityRU})`
       : '❌ Нет талончиков';
-    
-    console.log(`🎲 Кнопка: ${btn.textContent}, disabled: ${btn.disabled}`);
   }
 
   async spin() {
     console.log('🎰 НАЧАЛО КРУТКИ');
     
-    // Проверка талончиков
     if (this.data.tickets[this.currentRarity] <= 0) {
       console.log('❌ Нет талончиков');
       this.notify('❌ Нет талончиков!');
       return;
     }
-    
-    console.log('✅ Талончик списан');
     
     // Списываем талончик
     this.data.tickets[this.currentRarity]--;
@@ -158,11 +159,38 @@ class LootGachaSystem {
     
     // Анимация
     const resultDiv = document.getElementById('gacha-result');
-    if (!resultDiv) {
-      console.error('❌ Блок результата не найден!');
-      return;
-    }
-    
-    console.log('🎰 Показываем анимацию...');
     resultDiv.style.display = 'block';
-    resultDiv.innerHTML = '<div class="spi
+    resultDiv.innerHTML = '<div class="spinner">🎰</div>';
+    
+    console.log('🎰 Анимация...');
+    await this.sleep(1500);
+    
+    // Получаем предмет и награду
+    const item = this.getItem();
+    const reward = this.getReward();
+    
+    console.log('📦 Предмет:', item);
+    console.log('🎁 Награда:', reward);
+    
+    this.data.tickets[reward]++;
+    this.save();
+    this.updateUI();
+    
+    // Показываем результат
+    resultDiv.innerHTML = `
+      <div class="result-card ${item.rarity}">
+        <h3>🎉 Получено!</h3>
+        <div class="item-name">${item.name}</div>
+        <div class="item-rarity">${this.getRarityRU(item.rarity)}</div>
+        <div class="reward-info">
+          ✨ Награда: +1 ${this.getRarityRU(reward)}
+        </div>
+      </div>
+    `;
+    
+    console.log('✅ КРУТКА ЗАВЕРШЕНА');
+  }
+
+  getItem() {
+    const items = {
+      common: ['Зелье лечения', '
