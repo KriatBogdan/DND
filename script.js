@@ -109,6 +109,8 @@ class LootGachaSystem {
       selected.classList.add('active');
       console.log('✅ Карточка активирована');
     }
+} // ← Добавлена закрывающая скобка
+
     
     this.updateSpinBtn();
   }
