@@ -20,22 +20,22 @@
         <div class="ticket-card common" data-rarity="common">
           <span class="rarity-name">Обычный</span>
           <span class="ticket-count" id="ticket-common">0</span>
-          <button id="upgrade-common" class="upgrade-btn" onclick="event.stopPropagation(); gachaSystem.upgradeTickets('common')">↑ 3→1</button>
+          <button class="upgrade-btn" data-upgrade="common">↑ 3→1</button>
         </div>
         <div class="ticket-card uncommon" data-rarity="uncommon">
           <span class="rarity-name">Необычный</span>
           <span class="ticket-count" id="ticket-uncommon">0</span>
-          <button id="upgrade-uncommon" class="upgrade-btn" onclick="event.stopPropagation(); gachaSystem.upgradeTickets('uncommon')">↑ 3→1</button>
+          <button class="upgrade-btn" data-upgrade="uncommon">↑ 3→1</button>
         </div>
         <div class="ticket-card rare" data-rarity="rare">
           <span class="rarity-name">Редкий</span>
           <span class="ticket-count" id="ticket-rare">0</span>
-          <button id="upgrade-rare" class="upgrade-btn" onclick="event.stopPropagation(); gachaSystem.upgradeTickets('rare')">↑ 3→1</button>
+          <button class="upgrade-btn" data-upgrade="rare">↑ 3→1</button>
         </div>
         <div class="ticket-card epic" data-rarity="epic">
           <span class="rarity-name">Эпический</span>
           <span class="ticket-count" id="ticket-epic">0</span>
-          <button id="upgrade-epic" class="upgrade-btn" onclick="event.stopPropagation(); gachaSystem.upgradeTickets('epic')">↑ 3→1</button>
+          <button class="upgrade-btn" data-upgrade="epic">↑ 3→1</button>
         </div>
         <div class="ticket-card legendary" data-rarity="legendary">
           <span class="rarity-name">Легендарный</span>
@@ -75,7 +75,7 @@
     </section>
 
     <footer class="footer">
-      <button onclick="gachaSystem.resetData()" class="reset-btn">🔄 Сброс</button>
+      <button id="reset-btn" class="reset-btn">🔄 Сброс</button>
     </footer>
   </div>
 
