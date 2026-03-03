@@ -1,212 +1,129 @@
-:root {
-  --common: #95a5a6;
-  --uncommon: #2ecc71;
-  --rare: #3498db;
-  --epic: #9b59b6;
-  --legendary: #f39c12;
-  --dark-bg: #1a1a2e;
-  --card-bg: #16213e;
-  --text-light: #eaeaea;
-}
+/* Добавьте в конец вашего style.css */
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  background: linear-gradient(135deg, var(--dark-bg) 0%, #0f3460 100%);
-  color: var(--text-light);
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  min-height: 100vh;
-}
-
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
-}
-
-/* Header */
-.header {
-  text-align: center;
-  margin-bottom: 40px;
-  padding: 30px 0;
-}
-
-.header h1 {
-  font-size: 2.5em;
-  margin-bottom: 10px;
-  background: linear-gradient(45deg, var(--legendary), var(--rare));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.subtitle {
-  font-size: 1.1em;
-  color: #bdc3c7;
-}
-
-/* Tickets Panel */
-.tickets-panel {
-  margin-bottom: 40px;
-}
-
-.tickets-panel h2 {
-  margin-bottom: 20px;
-  font-size: 1.8em;
-}
-
-.tickets-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 15px;
-}
-
-.ticket-card {
-  background: var(--card-bg);
-  border-radius: 12px;
-  padding: 20px;
-  text-align: center;
-  border: 2px solid;
-  transition: all 0.3s ease;
-  cursor: pointer;
-}
-
-.ticket-card.common { border-color: var(--common); }
-.ticket-card.uncommon { border-color: var(--uncommon); }
-.ticket-card.rare { border-color: var(--rare); }
-.ticket-card.epic { border-color: var(--epic); }
-.ticket-card.legendary { border-color: var(--legendary); }
-
-.ticket-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-}
-
-.rarity-name {
-  display: block;
-  font-size: 0.9em;
-  opacity: 0.8;
-  margin-bottom: 10px;
-}
-
-.ticket-count {
-  display: block;
-  font-size: 2.5em;
-  font-weight: bold;
-  margin-bottom: 15px;
-}
-
-.upgrade-btn {
-  width: 100%;
-  padding: 10px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  color: var(--text-light);
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-weight: bold;
-}
-
-.upgrade-btn:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.2);
+/* Активная карточка талончика */
+.ticket-card.active {
   transform: scale(1.05);
+  box-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
+  border-width: 3px;
 }
 
-.upgrade-btn:disabled {
+/* Секция крутки */
+.gacha-section {
+  margin-bottom: 40px;
+}
+
+.spin-area {
+  text-align: center;
+}
+
+.spin-button {
+  width: 100%;
+  max-width: 400px;
+  padding: 20px 40px;
+  font-size: 1.5em;
+  font-weight: bold;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 30px;
+}
+
+.spin-button:hover:not(:disabled) {
+  transform: scale(1.05);
+  box-shadow: 0 10px 40px rgba(102, 126, 234, 0.4);
+}
+
+.spin-button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+  background: #95a5a6;
 }
 
-/* Notifications */
-.notification {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  background: rgba(46, 204, 113, 0.9);
-  color: white;
-  padding: 15px 25px;
-  border-radius: 8px;
-  animation: slideIn 0.3s ease;
-  z-index: 1000;
+/* Результат крутки */
+.gacha-result {
+  min-height: 200px;
+  display: none;
 }
 
-@keyframes slideIn {
+.spinner {
+  font-size: 3em;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.result-card {
+  background: var(--card-bg);
+  border-radius: 15px;
+  padding: 30px;
+  margin: 20px auto;
+  max-width: 500px;
+  border: 3px solid;
+  animation: resultAppear 0.5s ease;
+}
+
+.result-card.common { border-color: var(--common); }
+.result-card.uncommon { border-color: var(--uncommon); }
+.result-card.rare { border-color: var(--rare); }
+.result-card.epic { border-color: var(--epic); }
+.result-card.legendary { border-color: var(--legendary); }
+
+@keyframes resultAppear {
   from {
-    transform: translateX(400px);
     opacity: 0;
+    transform: scale(0.8);
   }
   to {
-    transform: translateX(0);
     opacity: 1;
+    transform: scale(1);
   }
 }
 
-/* Stats Section */
-.stats-section {
-  margin-bottom: 40px;
-}
-
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 15px;
-}
-
-.stat-card {
-  background: var(--card-bg);
-  padding: 20px;
-  border-radius: 12px;
-  border-left: 4px solid var(--legendary);
-}
-
-.stat-label {
-  display: block;
-  font-size: 0.9em;
-  opacity: 0.7;
-  margin-bottom: 10px;
-}
-
-.stat-value {
-  display: block;
+.item-name {
   font-size: 2em;
   font-weight: bold;
+  margin: 20px 0;
 }
 
-/* Footer */
-.footer {
-  text-align: center;
-  padding: 20px 0;
+.item-rarity {
+  font-size: 1.2em;
+  opacity: 0.8;
+  margin-bottom: 20px;
 }
 
-.reset-btn {
-  padding: 12px 30px;
-  background: rgba(231, 76, 60, 0.8);
-  border: none;
-  color: white;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 1em;
-  font-weight: bold;
-  transition: all 0.3s ease;
+.reward-info {
+  margin-top: 20px;
+  padding: 15px;
+  background: rgba(46, 204, 113, 0.2);
+  border-radius: 8px;
 }
 
-.reset-btn:hover {
-  background: rgba(231, 76, 60, 1);
-  transform: scale(1.05);
+/* Инфо секция */
+.info-section {
+  background: var(--card-bg);
+  padding: 25px;
+  border-radius: 12px;
+  margin-bottom: 40px;
+  border-left: 4px solid var(--rare);
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-  .header h1 {
-    font-size: 1.8em;
-  }
-  
-  .tickets-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
+.info-section h3 {
+  margin-bottom: 15px;
+  color: var(--rare);
 }
+
+.info-section ol {
+  padding-left: 20px;
+}
+
+.info-section li {
+  margin: 10px 0;
+  line-height: 1.6;
+}
+
