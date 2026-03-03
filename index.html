@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎲 D&D Loot Gacha</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎲 D&D Loot Gacha</h1>
+            <p>Используйте билеты для получения случайных предметов!</p>
+        </header>
+
+        <div class="tickets-section">
+            <h2>Выберите билет</h2>
+            <div class="tickets-grid" id="ticketsGrid"></div>
+        </div>
+
+        <div class="result-section" id="resultSection" style="display: none;">
+            <h2>🎉 Вы получили:</h2>
+            <div class="result-card" id="resultCard"></div>
+            <button class="btn-roll-again" onclick="rollAgain()">Открыть еще билет</button>
+        </div>
+
+        <div class="animation-overlay" id="animationOverlay">
+            <div class="gacha-animation">
+                <div class="spinner"></div>
+                <p>Открываем билет...</p>
+            </div>
+        </div>
+
+        <footer>
+            <p>Made with ❤️ for D&D players</p>
+        </footer>
+    </div>
+
+    <script src="items-db.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
